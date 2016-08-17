@@ -9,7 +9,7 @@ This template deploys OpenShift Enterprise with basic username / password for au
 
 |Resource           |Properties                                                                                                                          |
 |-------------------|------------------------------------------------------------------------------------------------------------------------------------|
-|Virtual Network    |**Address prefix:** 10.0.0.0/16<br />**Master subnet:** 10.0.0.0/24<br />**Node subnet:** 10.0.1.0/24                               |
+|Virtual Network    |**Address prefix:** 192.168.0.0/16<br />**Master subnet:** 192.168.1.0/24<br />**Node subnet:** 192.168.2.0/24                               |
 |Load Balancer      |2 probes and two rules for TCP 80 and TCP 443 <br/> NAT rules for SSH on Ports 2200-220X                                                                                  |
 |Public IP Addresses|OpenShift Master public IP<br />OpenShift Router public IP attached to Load Balancer                                                |
 |Storage Accounts   |2 Storage Accounts                                                                                                                  |
