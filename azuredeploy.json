@@ -2,19 +2,27 @@
 	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
 	"contentVersion": "1.0.0.0",
 	"parameters": {
+		"baseUrl": {
+			"type": "string",
+			"metadata": {
+				"description": "Base URL for Marketplace",
+				"artifactsBaseUrl": ""
+			},
+			"defaultValue": "https://raw.githubusercontent.com/haroldwongms/openshift-enterprise/master"
+		},
 		"masterVmSize": {
 			"type": "string",
-			"defaultValue": "Standard_D3",
+			"defaultValue": "Standard_DS3_v2",
 			"allowedValues": [
 				"Standard_A4", "Standard_A5", "Standard_A6", "Standard_A7", "Standard_A8", "Standard_A9", "Standard_A10", "Standard_A11",
-				"Standard_D3", "Standard_D4",
+				"Standard_D2", "Standard_D3", "Standard_D4",
 				"Standard_D11", "Standard_D12", "Standard_D13", "Standard_D14",
-				"Standard_D3_v2", "Standard_D4_v2", "Standard_D5_v2",
+				"Standard_D2_v2", "Standard_D3_v2", "Standard_D4_v2", "Standard_D5_v2",
 				"Standard_D11_v2", "Standard_D12_v2", "Standard_D13_v2", "Standard_D14_v2",
 				"Standard_G1", "Standard_G2", "Standard_G3", "Standard_G4", "Standard_G5",
 				"Standard_DS3", "Standard_DS4",
 				"Standard_DS11", "Standard_DS12", "Standard_DS13", "Standard_DS14",
-				"Standard_DS3_v2", "Standard_DS4_v2", "Standard_DS5_v2",
+				"Standard_DS2_v2", "Standard_DS3_v2", "Standard_DS4_v2", "Standard_DS5_v2",
 				"Standard_DS11_v2", "Standard_DS12_v2", "Standard_DS13_v2", "Standard_DS14_v2",
 				"Standard_GS1", "Standard_GS2", "Standard_GS3", "Standard_GS4", "Standard_GS5"
 			],
@@ -24,17 +32,17 @@
 		},
 		"nodeVmSize": {
 			"type": "string",
-			"defaultValue": "Standard_D3",
+			"defaultValue": "Standard_DS3_v2",
 			"allowedValues": [
 				"Standard_A4", "Standard_A5", "Standard_A6", "Standard_A7", "Standard_A8", "Standard_A9", "Standard_A10", "Standard_A11",
-				"Standard_D3", "Standard_D4",
+				"Standard_D2", "Standard_D3", "Standard_D4",
 				"Standard_D11", "Standard_D12", "Standard_D13", "Standard_D14",
-				"Standard_D3_v2", "Standard_D4_v2", "Standard_D5_v2",
+				"Standard_D2_v2", "Standard_D3_v2", "Standard_D4_v2", "Standard_D5_v2",
 				"Standard_D11_v2", "Standard_D12_v2", "Standard_D13_v2", "Standard_D14_v2",
 				"Standard_G1", "Standard_G2", "Standard_G3", "Standard_G4", "Standard_G5",
 				"Standard_DS3", "Standard_DS4",
 				"Standard_DS11", "Standard_DS12", "Standard_DS13", "Standard_DS14",
-				"Standard_DS3_v2", "Standard_DS4_v2", "Standard_DS5_v2",
+				"Standard_DS2_v2", "Standard_DS3_v2", "Standard_DS4_v2", "Standard_DS5_v2",
 				"Standard_DS11_v2", "Standard_DS12_v2", "Standard_DS13_v2", "Standard_DS14_v2",
 				"Standard_GS1", "Standard_GS2", "Standard_GS3", "Standard_GS4", "Standard_GS5"
 			],
@@ -165,9 +173,9 @@
 		"namingInfix": "[toLower(parameters('nodePrefix'))]",
 		"newStorageAccountMaster": "[concat(uniqueString(concat(resourceGroup().id, 'msa', '0')), 'msa')]",
 		"newStorageAccountNode": "[concat(uniqueString(concat(resourceGroup().id, 'nsa', '1')), 'nsa')]",
-		"addressPrefix": "10.0.0.0/16",
-		"masterSubnetPrefix": "10.0.0.0/24",
-		"nodeSubnetPrefix": "10.0.1.0/24",
+		"addressPrefix": "192.168.0.0/16",
+		"masterSubnetPrefix": "192.168.1.0/24",
+		"nodeSubnetPrefix": "192.168.2.0/24",
 		"virtualNetworkName": "osvnet",
 		"nodeLbPublicIpAddressName": "[concat(variables('namingInfix'), 'lbpip')]",
 		"masterSubnetName": "mastersubnet",
@@ -195,11 +203,11 @@
 		},
 		"imageReference": "[variables('osType')]",
 		"sshKeyPath": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
-		"nodePrepScriptUrl": "https://raw.githubusercontent.com/haroldwongms/openshift-enterprise/master/nodePrep.sh",
-		"masterPrepScriptUrl": "https://raw.githubusercontent.com/haroldwongms/openshift-enterprise/master/masterPrep.sh",
+		"nodePrepScriptUrl": "[concat(parameters('baseUrl'), '/nodePrep.sh')]",
+		"masterPrepScriptUrl": "[concat(parameters('baseUrl'), '/masterPrep.sh')]",
 		"nodePrepScriptFileName": "nodePrep.sh",
 		"masterPrepScriptFileName": "masterPrep.sh",
-		"openshiftDeploymentTemplateUrl": "https://raw.githubusercontent.com/haroldwongms/openshift-enterprise/master/openshiftdeploy.json",
+		"openshiftDeploymentTemplateUrl": "[concat(parameters('baseUrl'), '/openshiftdeploy.json']",
 		"vmSizesMap": {
 			"Standard_A4": {
 				"storageAccountType": "Standard_LRS"
@@ -790,6 +798,9 @@
 					"contentVersion": "1.0.0.0"
 				},
 				"parameters": {
+					"baseUrl": {
+						"value": "[parameters('baseUrl')]"
+					},
 					"openshiftMasterHostname": {
 						"value": "[parameters('openshiftMasterHostname')]"
 					},

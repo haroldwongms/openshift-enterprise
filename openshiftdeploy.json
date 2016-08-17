@@ -2,6 +2,12 @@
 	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
 	"contentVersion": "1.0.0.0",
 	"parameters": {
+		"baseUrl": {
+			"type": "string",
+			"metadata": {
+				"description": "Base URL for script location"
+			}
+		},
 		"openshiftMasterHostname": {
 			"type": "string",
 			"minLength": 1,
@@ -66,7 +72,7 @@
 		}
 	},
 	"variables": {
-		"openshiftDeploymentScriptUrl": "https://raw.githubusercontent.com/haroldwongms/openshift-enterprise/master/deployOpenShift.sh",
+		"openshiftDeploymentScriptUrl": "[concat(parameters('baseUrl'), '/deployOpenShift.sh']",
 		"openshiftDeploymentScriptFileName": "deployOpenShift.sh"
 	},
 	"resources": [{
