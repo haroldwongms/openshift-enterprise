@@ -41,7 +41,8 @@ You will need to create a Key Vault to store your SSH Private Key that will then
   c.  Create Secret: azure keyvault secret set -u \<vault-name\> -s \<secret-name\> -w \<secret-value\><br/>
          Ex: [azure keyvault secret set -u KeyVaultName -s SecretName -w <Paste private key here>] <br/>
      1. Do not include the first line "-----BEGIN RSA PRIVATE KEY-----" and the last line "-----END RSA PRIVATE KEY-----" <br/>
- d.  Enable the Keyvvault for Template Deployment: azure keyvault set-policy -u \<vault-name\> --enabled-for-template-deployment true <br/>
+  <br/>
+  d.  Enable the Keyvvault for Template Deployment: azure keyvault set-policy -u \<vault-name\> --enabled-for-template-deployment true <br/>
          Ex: [azure keyvault set-policy -u KeyVaultName --enabled-for-template-deployment true] <br/>
 
 ### azuredeploy.Parameters.json File Explained
