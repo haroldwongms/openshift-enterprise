@@ -372,7 +372,28 @@
 	},
 	"resources": [
 
-		{
+        {
+			"apiVersion": "[variables('apiVersionNetwork')]",
+			"type": "Microsoft.Network/networkSecurityGroups",
+			"name": "[concat(parameters('openshiftMasterHostname'), '-nsg')]",
+			"location": "[variables('location')]",
+			"properties": {
+				"securityRules": [{
+					"name": "allowSSHin_all",
+					"properties": {
+						"description": "Allow SSH in from all locations",
+						"protocol": "Tcp",
+						"sourcePortRange": "*",
+						"destinationPortRange": "22",
+						"sourceAddressPrefix": "*",
+						"destinationAddressPrefix": "*",
+						"access": "Allow",
+						"priority": 100,
+						"direction": "Inbound"
+					}
+				}]
+			}
+		}, {
 			"type": "Microsoft.Network/virtualNetworks",
 			"name": "[variables('virtualNetworkName')]",
 			"location": "[variables('location')]",
@@ -437,7 +458,7 @@
 		}, {
 			"type": "Microsoft.Compute/availabilitySets",
 			"name": "nodes",
-			"location": "[resourceGroup().location]",
+			"location": "[variables('location')]",
 			"apiVersion": "[variables('apiVersionCompute')]",
 			"properties": {}
 		}, {
@@ -543,7 +564,7 @@
 		{
 			"type": "Microsoft.Network/publicIPAddresses",
 			"name": "[parameters('openshiftMasterPublicIpDnsLabelPrefix')]",
-			"location": "[resourceGroup().location]",
+			"location": "[variables('location')]",
 			"apiVersion": "[variables('apiVersionNetwork')]",
 			"tags": {
 				"displayName": "OpenShiftMasterPublicIP"
@@ -557,7 +578,7 @@
 		}, {
 			"type": "Microsoft.Network/networkInterfaces",
 			"name": "[concat(parameters('openshiftMasterHostname'), 'nic')]",
-			"location": "[resourceGroup().location]",
+			"location": "[variables('location')]",
 			"apiVersion": "[variables('apiVersionNetwork')]",
 			"tags": {
 				"displayName": "OpenShiftMasterNetworkInterface"
@@ -577,12 +598,16 @@
 							"id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'), '/subnets/', variables('masterSubnetName'))]"
 						}
 					}
-				}]
+				}],
+				"networkSecurityGroup":
+				{
+					"id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('openshiftMasterHostname'), '-nsg'))]"
+				}
 			}
 		}, {
 			"type": "Microsoft.Compute/virtualMachines",
 			"name": "[parameters('openshiftMasterHostname')]",
-			"location": "[resourceGroup().location]",
+			"location": "[variables('location')]",
 			"apiVersion": "[variables('apiVersionCompute')]",
 			"tags": {
 				"displayName": "OpenShiftMasterVirtualMachine"
@@ -637,7 +662,7 @@
 		}, {
 			"type": "Microsoft.Compute/virtualMachines/extensions",
 			"name": "[concat(parameters('openshiftMasterHostname'), '/deployOpenShift')]",
-			"location": "[resourceGroup().location]",
+			"location": "[variables('location')]",
 			"apiVersion": "[variables('apiVersionCompute')]",
 			"tags": {
 				"displayName": "PrepMaster"
@@ -662,7 +687,7 @@
 		}, {
 			"type": "Microsoft.Network/networkInterfaces",
 			"name": "[concat(variables('namingInfix'), copyIndex(), 'nic')]",
-			"location": "[resourceGroup().location]",
+			"location": "[variables('location')]",
 			"apiVersion": "[variables('apiVersionNetwork')]",
 			"tags": {
 				"displayName": "OpenShiftNodeNetworkInterfaces"
@@ -695,7 +720,7 @@
 		}, {
 			"type": "Microsoft.Compute/virtualMachines",
 			"name": "[concat(variables('namingInfix'), '-', copyIndex())]",
-			"location": "[resourceGroup().location]",
+			"location": "[variables('location')]",
 			"apiVersion": "[variables('apiVersionCompute')]",
 			"tags": {
 				"displayName": "OpenShiftNodes"
@@ -757,7 +782,7 @@
 		}, {
 			"type": "Microsoft.Compute/virtualMachines/extensions",
 			"name": "[concat(variables('namingInfix'), '-', copyIndex(), '/prepNodes')]",
-			"location": "[resourceGroup().location]",
+			"location": "[variables('location')]",
 			"apiVersion": "[variables('apiVersionCompute')]",
 			"tags": {
 				"displayName": "PrepNodes"
