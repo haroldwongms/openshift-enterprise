@@ -8,9 +8,9 @@ POOL_ID=$3
 # Register Host with Cloud Access Subscription
 echo $(date) " - Register host with Cloud Access Subscription"
 
-subscription-manager unregister
-yum -y remove RHEL7
-rm -f /etc/yum.repos.d/rh-cloud.repo
+# subscription-manager unregister
+# yum -y remove RHEL7
+# rm -f /etc/yum.repos.d/rh-cloud.repo
 
 subscription-manager register --username=$USER --password=$PASSWORD
 subscription-manager attach --pool=$POOL_ID
