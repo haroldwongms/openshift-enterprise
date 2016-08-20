@@ -207,7 +207,7 @@
 		"masterPrepScriptUrl": "[concat(parameters('baseUrl'), '/masterPrep.sh')]",
 		"nodePrepScriptFileName": "nodePrep.sh",
 		"masterPrepScriptFileName": "masterPrep.sh",
-		"openshiftDeploymentTemplateUrl": "[concat(parameters('baseUrl'), '/openshiftdeploy.json']",
+		"openshiftDeploymentTemplateUrl": "[concat(parameters('baseUrl'), '/openshiftdeploy.json')]",
 		"vmSizesMap": {
 			"Standard_A4": {
 				"storageAccountType": "Standard_LRS"
