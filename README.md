@@ -67,7 +67,7 @@ You will need to create a Key Vault to store your SSH Private Key that will then
 15. keyVaultResourceGroup: The name of the Resource Group that contains the Key Vault
 16. keyVaultName: The name of the Key Vault you created
 17. keyVaultSecret: The Secret Name you used when creating the Secret
-18. defaultSubDomain: The default subdomain to be used for routing to applications (e.g. apps.mydomain.com)
+18. defaultSubDomain: This isn't used currently but kept as a placeholder for future.  Any string can be entered here but will be ignored.
 
 ## Deploy Template
 
