@@ -187,7 +187,7 @@
 		"lbBackendPoolId": "[concat(variables('nodeLbId'),'/backendAddressPools/loadBalancerBackend')]",
 		"lbHttpProbeId": "[concat(variables('nodeLbId'),'/probes/httpProbe')]",
 		"lbHttpsProbeId": "[concat(variables('nodeLbId'),'/probes/httpsProbe')]",
-		"defaultSubDomain": "[concat(reference(parameters('nodeLbPublicIpDnsLabelPrefix')).ipAddress, '.xip.io')]"
+		"defaultSubDomain": "[concat(reference(parameters('nodeLbPublicIpDnsLabelPrefix')).ipAddress, '.xip.io')]",
 		"osType": {
 			"publisher": "RedHat",
 			"offer": "RHEL",
