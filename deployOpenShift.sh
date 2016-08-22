@@ -44,7 +44,8 @@ nodes
 # Set variables common for all OSEv3 hosts
 [OSEv3:vars]
 ansible_ssh_user=$SUDOUSER
-ansible_sudo=true
+#ansible_sudo=true
+ansible_become=yes
 deployment_type=openshift-enterprise
 docker_udev_workaround=True
 # containerized=true
