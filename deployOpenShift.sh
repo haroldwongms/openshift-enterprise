@@ -21,9 +21,7 @@ echo $(date) " - Generating Private keys for use by Ansible for OpenShift Instal
 
 echo "Generating keys"
 
-runuser -l $SUDOUSER -c "echo \"-----BEGIN RSA PRIVATE KEY-----\" > ~/.ssh/id_rsa"
-runuser -l $SUDOUSER -c "echo \"$PRIVATEKEY\" >> ~/.ssh/id_rsa"
-runuser -l $SUDOUSER -c "echo \"-----END RSA PRIVATE KEY-----\" >> ~/.ssh/id_rsa"
+runuser -l $SUDOUSER -c "echo \"$PRIVATEKEY\" > ~/.ssh/id_rsa"
 runuser -l $SUDOUSER -c "chmod 600 ~/.ssh/id_rsa*"
 
 echo "Configuring SSH ControlPath to use shorter path name"

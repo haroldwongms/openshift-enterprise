@@ -31,7 +31,6 @@ You will need to create a Key Vault to store your SSH Private Key that will then
   a.  Create new resource group: New-AzureRMResourceGroup -Name 'ResourceGroupName' -Location 'West US'<br/>
   b.  Create key vault: New-AzureRmKeyVault -VaultName 'KeyVaultName' -ResourceGroup 'ResourceGroupName' -Location 'West US'<br/>
   c.  Create variable with sshPrivateKey: $securesecret = ConvertTo-SecureString -String '[copy ssh Private Key here - including line feeds]' -AsPlainText -Force<br/>
-     Do not include the first line "-----BEGIN RSA PRIVATE KEY-----" and the last line "-----END RSA PRIVATE KEY-----"  <br/>
   d.  Create Secret: Set-AzureKeyVaultSecret -Name 'SecretName' -SecretValue $securesecret -VaultName 'KeyVaultName'<br/>
 
 2. Create Key Vault using Azure CLI - must be run from a Linux machine (can use Azure CLI container from Docker for Windows) or Mac<br/>
@@ -39,9 +38,8 @@ You will need to create a Key Vault to store your SSH Private Key that will then
          Ex: [azure group create ResourceGroupName 'East US'] <br/>
   b.  Create Key Vault: azure keyvault create -u \<vault-name\> -g \<resource-group\> -l \<location\><br/>
          Ex: [azure keyvault create -u KeyVaultName -g ResourceGroupName -l 'East US'] <br/>
-  c.  Create Secret: azure keyvault secret set -u \<vault-name\> -s \<secret-name\> -w \<secret-value\><br/>
-         Ex: [azure keyvault secret set -u KeyVaultName -s SecretName -w <Paste private key here>] <br/>
-     Do not include the first line "-----BEGIN RSA PRIVATE KEY-----" and the last line "-----END RSA PRIVATE KEY-----" <br/>
+  c.  Create Secret: azure keyvault secret set -u \<vault-name\> -s \<secret-name\> --file \<private-key-file-name\><br/>
+         Ex: [azure keyvault secret set -u KeyVaultName -s SecretName --file ~/.ssh/id_rsa <br/>
   <br/>
   d.  Enable the Keyvvault for Template Deployment: azure keyvault set-policy -u \<vault-name\> --enabled-for-template-deployment true <br/>
          Ex: [azure keyvault set-policy -u KeyVaultName --enabled-for-template-deployment true] <br/>
