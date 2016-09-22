@@ -54,7 +54,7 @@ You will need to create a Key Vault to store your SSH Private Key that will then
 6.  nodePrefix: prefix to be prepended to create host names for the Nodes
 7.  nodeInstanceCount: Number of Nodes to deploy
 8.  adminUsername: Admin username for both OS login and OpenShift login
-9.  adminPassword: Admin password for both OS login and OpenShift login
+9.  adminPassword: Password for OpenShift login
 10. cloudAccessUsername: Your Cloud Access subscription user name
 11. cloudAccessPassword: The password for your Cloud Access subscription
 12. cloudAccessPoolId: The Pool ID that contains your RHEL and OpenShift subscriptions
@@ -77,6 +77,17 @@ The OpenShift Ansible playbook does take a while to run when using VMs backed by
 <hr />
 Be sure to follow the OpenShift instructions to create the ncessary DNS entry for the OpenShift Router for access to applications.
 
+## Post-Deployment Operations
+
+This template creates an OpenShift user but does not make it a full OpenShift user.  To do that, please perform the following.
+
+1. SSH in to master node
+2. Execute the following command:
+
+   ```sh
+   sudo oadm policy add-cluster-role-to-user cluster-admin <user>
+   ```
+   
 ### Additional OpenShift Configuration Options
  
 You can configure additional settings per the official [OpenShift Enterprise Documentation](https://docs.openshift.com/enterprise/3.2/welcome/index.html).
