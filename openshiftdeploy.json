@@ -85,10 +85,7 @@
 	},
 	"variables": {
 		"openshiftDeploymentScriptUrl": "[concat(parameters('baseUrl'), '/deployOpenShift.sh')]",
-		"openshiftDeploymentScriptFileName": "deployOpenShift.sh",
-		"xipioDomain": "[concat(variables('nodePublicIpAddressId').ipAddress, '.xip.io')]",
-		"customDomain": "[parameters('defaultSubDomain')]",
-		"subDomainChosen": "[concat(parameters('defaultSubDomainType'), 'Domain')]"
+		"openshiftDeploymentScriptFileName": "deployOpenShift.sh"
 	},
 	"resources": [{
 		"type": "Microsoft.Compute/virtualMachines/extensions",
