@@ -62,12 +62,12 @@ $MASTER.$DOMAIN
 
 # host group for nodes
 [nodes]
-$MASTER.$DOMAIN openshift_node_labels="{'region': 'infra', 'zone': 'default'}" openshift_schedulable=true
+$MASTER.$DOMAIN openshift_node_labels="{'region': 'master', 'zone': 'default'}" 
 EOF
 
 for (( c=0; c<$NODECOUNT; c++ ))
 do
-  echo "$NODEPREFIX-$c.$DOMAIN" >> /etc/ansible/hosts
+  echo "$NODEPREFIX-$c.$DOMAIN openshift_node_labels=\"{'region': 'infra', 'zone': 'default'}\"" >> /etc/ansible/hosts
 done
 
 
