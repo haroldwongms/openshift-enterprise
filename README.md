@@ -65,7 +65,8 @@ You will need to create a Key Vault to store your SSH Private Key that will then
 15. keyVaultResourceGroup: The name of the Resource Group that contains the Key Vault
 16. keyVaultName: The name of the Key Vault you created
 17. keyVaultSecret: The Secret Name you used when creating the Secret
-18. defaultSubDomain: This isn't used currently but kept as a placeholder for future.  Any string can be entered here but will be ignored.
+18. defaultSubDomainType: This will either be xipio (if you don't have your own domain) or custom if you have your own domain that you would like to use for routing
+19. defaultSubDomain: The wildcard DNS name you would like to use for routing if you selected custom above.  If you selected xipio above, then this field will be ignored
 
 ## Deploy Template
 
