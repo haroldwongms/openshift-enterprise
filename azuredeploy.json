@@ -213,9 +213,6 @@
 		},
 		"imageReference": "[variables('osType')]",
 		"sshKeyPath": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
-		"xipioDomain": "[concat(reference(parameters('nodeLbPublicIpDnsLabelPrefix')).ipAddress, '.xip.io')]",
-		"customDomain": "[parameters('defaultSubDomain')]",
-		"subDomainChosen": "[concat(parameters('defaultSubDomainType'), 'Domain')]",
 		"nodePrepScriptUrl": "[concat(parameters('baseUrl'), '/nodePrep.sh')]",
 		"masterPrepScriptUrl": "[concat(parameters('baseUrl'), '/masterPrep.sh')]",
 		"nodePrepScriptFileName": "nodePrep.sh",
@@ -886,8 +883,14 @@
 					"adminPassword": {
 						"value": "[parameters('adminPassword')]"
 					},
-					"defaultSubDomain": {
-						"value": "[parameters('subDomainChosen')]"
+					"xipioDomain": {
+						"value": "[concat(reference(parameters('nodeLbPublicIpDnsLabelPrefix')).ipAddress, '.xip.io')]"
+					},
+					"customDomain": {
+						"value": "[parameters('defaultSubDomain')]"
+					},
+					"subDomainChosen": {
+						"value": "[concat(parameters('defaultSubDomainType'), 'Domain')]"
 					},
 					"sshPrivateKey": {
 						"reference": {

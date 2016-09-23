@@ -57,10 +57,22 @@
 				"description": "Administrator password for OpenShift Console"
 			}
 		},
-		"defaultSubDomain": {
+		"xipioDomain": {
 			"type": "string",
 			"metadata": {
-				"description": "Default Subdomain for application routing"
+				"description": "Xip.io Subdomain for application routing"
+			}
+		},
+		"customDomain": {
+			"type": "string",
+			"metadata": {
+				"description": "custom Subdomain for application routing"
+			}
+		},
+		"subDomainChosen": {
+			"type": "string",
+			"metadata": {
+				"description": "Subdomain chosen for application routing"
 			}
 		},
 		"sshPrivateKey": {
@@ -73,7 +85,10 @@
 	},
 	"variables": {
 		"openshiftDeploymentScriptUrl": "[concat(parameters('baseUrl'), '/deployOpenShift.sh')]",
-		"openshiftDeploymentScriptFileName": "deployOpenShift.sh"
+		"openshiftDeploymentScriptFileName": "deployOpenShift.sh",
+		"xipioDomain": "[concat(variables('nodePublicIpAddressId').ipAddress, '.xip.io')]",
+		"customDomain": "[parameters('defaultSubDomain')]",
+		"subDomainChosen": "[concat(parameters('defaultSubDomainType'), 'Domain')]"
 	},
 	"resources": [{
 		"type": "Microsoft.Compute/virtualMachines/extensions",
@@ -94,7 +109,7 @@
 				]
 			},
 			"protectedSettings": {
-				"commandToExecute": "[concat('sh ', variables('openshiftDeploymentScriptFileName'), ' \"', parameters('adminUsername'), '\" \"', parameters('adminPassword'), '\" \"', parameters('sshPrivateKey'), '\" \"', parameters('openshiftMasterHostname'), '\" \"', parameters('openshiftMasterPublicIpFqdn'), '\" \"', parameters('openshiftMasterPublicIpAddress'), '\" \"', parameters('nodePrefix'), '\" \"', parameters('nodeInstanceCount'), '\" \"', parameters('defaultSubDomain'), '\"')]"
+				"commandToExecute": "[concat('sh ', variables('openshiftDeploymentScriptFileName'), ' \"', parameters('adminUsername'), '\" \"', parameters('adminPassword'), '\" \"', parameters('sshPrivateKey'), '\" \"', parameters('openshiftMasterHostname'), '\" \"', parameters('openshiftMasterPublicIpFqdn'), '\" \"', parameters('openshiftMasterPublicIpAddress'), '\" \"', parameters('nodePrefix'), '\" \"', parameters('nodeInstanceCount'), '\" \"', parameters(parameters('subDomainChosen')), '\"')]"
 			}
 		}
 	}],
