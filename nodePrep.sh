@@ -33,10 +33,9 @@ echo $(date) " - Install base packages and update system to latest packages"
 yum -y install wget git net-tools bind-utils iptables-services bridge-utils bash-completion
 yum -y update
 
-# Install Docker 1.9.1 
-echo $(date) " - Installing Docker 1.9.1"
+# Install Docker 1.10.3
+echo $(date) " - Installing Docker 1.10.3"
 
-# yum -y install docker-1.9.1
 yum -y install docker-1.10.3
 sed -i -e "s#^OPTIONS='--selinux-enabled'#OPTIONS='--selinux-enabled --insecure-registry 172.30.0.0/16'#" /etc/sysconfig/docker
 

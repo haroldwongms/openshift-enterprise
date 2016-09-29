@@ -25,7 +25,7 @@ sleep 10
 subscription-manager repos \
     --enable="rhel-7-server-rpms" \
     --enable="rhel-7-server-extras-rpms" \
-    --enable="rhel-7-server-ose-3.2-rpms"
+    --enable="rhel-7-server-ose-3.3-rpms"
 
 # Install base packages and update system to latest packages
 echo $(date) " - Install base packages and update system to latest packages"
@@ -41,7 +41,7 @@ yum -y install atomic-openshift-utils
 # Install Docker 1.10.3 
 echo $(date) " - Installing Docker 1.10.3"
 
-yum -y install docker
+yum -y install docker-1.10.3
 sed -i -e "s#^OPTIONS='--selinux-enabled'#OPTIONS='--selinux-enabled --insecure-registry 172.30.0.0/16'#" /etc/sysconfig/docker
 
 # Create thin pool logical volume for Docker
