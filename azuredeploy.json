@@ -80,7 +80,7 @@
 			}
 		},
 		"dataDiskSize": {
-			"type": "string",
+			"type": "int",
 			"minLength": 1,
 			"allowedValues": [1, 5, 10, 25, 50, 75, 100, 128, 256, 512, 768, 1023],
 			"metadata": {
