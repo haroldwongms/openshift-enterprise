@@ -10,9 +10,10 @@ PRIVATEKEY=$3
 MASTER=$4
 MASTERPUBLICIPHOSTNAME=$5
 MASTERPUBLICIPADDRESS=$6
-NODEPREFIX=$7
-NODECOUNT=$8
-ROUTING=$9
+INFRA=$7
+NODE=$8
+NODECOUNT=$9
+ROUTING=${10}
 
 DOMAIN=$( awk 'NR==2' /etc/resolv.conf | awk '{ print $2 }' )
 
@@ -62,12 +63,13 @@ $MASTER.$DOMAIN
 
 # host group for nodes
 [nodes]
-$MASTER.$DOMAIN openshift_node_labels="{'region': 'master', 'zone': 'default'}" 
+$MASTER.$DOMAIN openshift_node_labels="{'region': 'master', 'zone': 'default'}"
+$INFRA.$DOMAIN openshift_node_labels="{'region': 'infra', 'zone': 'default'}"
 EOF
 
 for (( c=0; c<$NODECOUNT; c++ ))
 do
-  echo "$NODEPREFIX-$c.$DOMAIN openshift_node_labels=\"{'region': 'infra', 'zone': 'default'}\"" >> /etc/ansible/hosts
+  echo "$NODE-$c.$DOMAIN openshift_node_labels=\"{'region': 'nodes', 'zone': 'default'}\"" >> /etc/ansible/hosts
 done
 
 
@@ -91,7 +93,7 @@ echo $(date) "- Deploying Registry"
 
 echo $(date) "- Deploying Router"
 
-runuser -l $SUDOUSER -c "sudo oadm router osrouter --replicas=$NODECOUNT --credentials=/etc/origin/master/openshift-router.kubeconfig --service-account=router"
+# runuser -l $SUDOUSER -c "sudo oadm router osrouter --replicas=$NODECOUNT --credentials=/etc/origin/master/openshift-router.kubeconfig --service-account=router"
 
 echo $(date) "- Re-enabling requiretty"
 

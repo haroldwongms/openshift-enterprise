@@ -2,7 +2,7 @@
 	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
 	"contentVersion": "1.0.0.0",
 	"parameters": {
-		"baseUrl": {
+		"_artifactsLocation": {
 			"type": "string",
 			"metadata": {
 				"description": "Base URL for script location"
@@ -29,11 +29,18 @@
 				"description": "OpenShift Master VM public IP address"
 			}
 		},
-		"nodePrefix": {
+		"openshiftInfraHostname": {
 			"type": "string",
 			"minLength": 1,
 			"metadata": {
-				"description": "OpenShift Node VM prefix"
+				"description": "OpenShift Infra Node hostname"
+			}
+		},
+		"openshiftNodeHostname": {
+			"type": "string",
+			"minLength": 1,
+			"metadata": {
+				"description": "OpenShift Node hostname"
 			}
 		},
 		"nodeInstanceCount": {
@@ -50,7 +57,7 @@
 				"description": "Administrator username on all VMs"
 			}
 		},
-		"adminPassword": {
+		"openshiftPassword": {
 			"type": "securestring",
 			"minLength": 1,
 			"metadata": {
@@ -84,7 +91,7 @@
 		}
 	},
 	"variables": {
-		"openshiftDeploymentScriptUrl": "[concat(parameters('baseUrl'), '/deployOpenShift.sh')]",
+		"openshiftDeploymentScriptUrl": "[concat(parameters('_artifactsLocation'), '/deployOpenShift.sh')]",
 		"openshiftDeploymentScriptFileName": "deployOpenShift.sh"
 	},
 	"resources": [{
@@ -96,17 +103,19 @@
 			"displayName": "DeployOpenShift"
 		},
 		"properties": {
-			"publisher": "Microsoft.OSTCExtensions",
-			"type": "CustomScriptForLinux",
-			"typeHandlerVersion": "1.5",
-			"autoUpgradeMinorVersion": true,
-			"settings": {
-				"fileUris": [
-					"[variables('openshiftDeploymentScriptUrl')]"
-				]
-			},
-			"protectedSettings": {
-				"commandToExecute": "[concat('sh ', variables('openshiftDeploymentScriptFileName'), ' \"', parameters('adminUsername'), '\" \"', parameters('adminPassword'), '\" \"', parameters('sshPrivateKey'), '\" \"', parameters('openshiftMasterHostname'), '\" \"', parameters('openshiftMasterPublicIpFqdn'), '\" \"', parameters('openshiftMasterPublicIpAddress'), '\" \"', parameters('nodePrefix'), '\" \"', parameters('nodeInstanceCount'), '\" \"', parameters(parameters('subDomainChosen')), '\"')]"
+			"properties": {
+				"publisher": "Microsoft.Azure.Extensions",
+				"type": "CustomScript",
+				"typeHandlerVersion": "2.0",
+				"autoUpgradeMinorVersion": true,
+				"settings": {
+					"fileUris": [
+						"[variables('openshiftDeploymentScriptUrl')]"
+					]
+				},
+				"protectedSettings": {
+					"commandToExecute": "[concat('bash ', variables('openshiftDeploymentScriptFileName'), ' \"', parameters('adminUsername'), '\" \"', parameters('openshiftPassword'), '\" \"', parameters('sshPrivateKey'), '\" \"', parameters('openshiftMasterHostname'), '\" \"', parameters('openshiftMasterPublicIpFqdn'), '\" \"', parameters('openshiftMasterPublicIpAddress'), '\" \"', parameters('openshiftInfraHostname'), '\" \"', parameters('openshiftNodeHostname'), '\" \"', parameters('nodeInstanceCount'), '\" \"', parameters(parameters('subDomainChosen')), '\"')]"
+				}
 			}
 		}
 	}],
