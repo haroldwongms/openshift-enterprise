@@ -81,7 +81,7 @@
 		},
 		"dataDiskSize": {
 			"type": "int",
-			"minLength": 1,
+			"minValue": 1,
 			"allowedValues": [1, 5, 10, 25, 50, 75, 100, 128, 256, 512, 768, 1023],
 			"metadata": {
 				"description": "Size of Datadisk in GB"
@@ -711,6 +711,9 @@
 				"[concat('Microsoft.Network/networkInterfaces/', variables('openshiftMasterHostname'), 'nic')]"
 			],
 			"properties": {
+				"availabilitySet": {
+					"id": "[resourceId('Microsoft.Compute/availabilitySets', 'masteravailabilityset')]"
+				},
 				"hardwareProfile": {
 					"vmSize": "[parameters('masterVmSize')]"
 				},
@@ -732,14 +735,14 @@
 					"osDisk": {
 						"name": "[concat(variables('openshiftMasterHostname'), 'osdisk')]",
 						"vhd": {
-							"uri": "[concat('https://', variables('newStorageAccountMaster'), '.blob.core.windows.net/vhd/', parameters('openshiftMasterHostname'), '.vhd')]"
+							"uri": "[concat('https://', variables('newStorageAccountMaster'), '.blob.core.windows.net/vhd/', variables('openshiftMasterHostname'), '.vhd')]"
 						},
 						"caching": "ReadWrite",
 						"createOption": "FromImage"
 					},
 					"dataDisks": [{
 						"name": "[concat(variables('openshiftMasterHostname'), '-docker-pool')]",
-						"diskSizeGB": "[parameter('dataDiskSize')]",
+						"diskSizeGB": "[parameters('dataDiskSize')]",
 						"lun": 0,
 						"vhd": {
 							"uri": "[concat('https://', variables('newStorageAccountMaster'), '.blob.core.windows.net/vhd/', variables('openshiftMasterHostname'), '-docker-pool.vhd')]"
@@ -766,11 +769,14 @@
 				"[concat('Microsoft.Network/networkInterfaces/', variables('openshiftInfraHostname'), 'nic')]"
 			],
 			"properties": {
+				"availabilitySet": {
+					"id": "[resourceId('Microsoft.Compute/availabilitySets', 'masteravailabilityset')]"
+				},
 				"hardwareProfile": {
 					"vmSize": "[parameters('masterVmSize')]"
 				},
 				"osProfile": {
-					"computerName": "[variables('openshiftMasterHostname')]",
+					"computerName": "[variables('openshiftInfraHostname')]",
 					"adminUsername": "[parameters('adminUsername')]",
 					"linuxConfiguration": {
 						"disablePasswordAuthentication": true,
@@ -787,14 +793,14 @@
 					"osDisk": {
 						"name": "[concat(variables('openshiftInfraHostname'), 'osdisk')]",
 						"vhd": {
-							"uri": "[concat('https://', variables('newStorageAccountMaster'), '.blob.core.windows.net/vhd/', parameters('openshiftInfraHostname'), '.vhd')]"
+							"uri": "[concat('https://', variables('newStorageAccountMaster'), '.blob.core.windows.net/vhd/', variables('openshiftInfraHostname'), '.vhd')]"
 						},
 						"caching": "ReadWrite",
 						"createOption": "FromImage"
 					},
 					"dataDisks": [{
 						"name": "[concat(variables('openshiftInfraHostname'), '-docker-pool')]",
-						"diskSizeGB": "[parameter('dataDiskSize')]",
+						"diskSizeGB": "[parameters('dataDiskSize')]",
 						"lun": 0,
 						"vhd": {
 							"uri": "[concat('https://', variables('newStorageAccountMaster'), '.blob.core.windows.net/vhd/', variables('openshiftInfraHostname'), '-docker-pool.vhd')]"
@@ -826,7 +832,7 @@
 			},
 			"properties": {
 				"availabilitySet": {
-					"id": "[resourceId('Microsoft.Compute/availabilitySets', 'nodes')]"
+					"id": "[resourceId('Microsoft.Compute/availabilitySets', 'nodeavailabilityset')]"
 				},
 				"hardwareProfile": {
 					"vmSize": "[parameters('nodeVmSize')]"
@@ -856,7 +862,7 @@
 					},
 					"dataDisks": [{
 						"name": "[concat(variables('openshiftNodeHostname'), copyIndex(), '-docker-pool')]",
-						"diskSizeGB": "[parameter('dataDiskSize')]",
+						"diskSizeGB": "[parameters('dataDiskSize')]",
 						"lun": 0,
 						"vhd": {
 							"uri": "[concat('https://', variables('newStorageAccountNode'), '.blob.core.windows.net/vhd/', variables('openshiftNodeHostname'), copyIndex(), '-docker-pool.vhd')]"
@@ -917,7 +923,7 @@
 					]
 				},
 				"protectedSettings": {
-					"commandToExecute": "[concat('bash ', variables('masterPrepScriptFileName'), ' ', parameters('cloudAccessUsername'), ' ', parameters('cloudAccessPassword'), ' ', parameters('cloudAccessPoolId'))]"
+					"commandToExecute": "[concat('bash ', variables('nodePrepScriptFileName'), ' ', parameters('cloudAccessUsername'), ' ', parameters('cloudAccessPassword'), ' ', parameters('cloudAccessPoolId'))]"
 				}
 			}
 		}, {
@@ -936,19 +942,17 @@
 				"count": "[parameters('nodeInstanceCount')]"
 			},
 			"properties": {
-				"properties": {
-					"publisher": "Microsoft.Azure.Extensions",
-					"type": "CustomScript",
-					"typeHandlerVersion": "2.0",
-					"autoUpgradeMinorVersion": true,
-					"settings": {
-						"fileUris": [
-							"[variables('nodePrepScriptUrl')]"
-						]
-					},
-					"protectedSettings": {
-						"commandToExecute": "[concat('bash ', variables('nodePrepScriptFileName'), ' ', parameters('cloudAccessUsername'), ' ', parameters('cloudAccessPassword'), ' ', parameters('cloudAccessPoolId'))]"
-					}
+				"publisher": "Microsoft.Azure.Extensions",
+				"type": "CustomScript",
+				"typeHandlerVersion": "2.0",
+				"autoUpgradeMinorVersion": true,
+				"settings": {
+					"fileUris": [
+						"[variables('nodePrepScriptUrl')]"
+					]
+				},
+				"protectedSettings": {
+					"commandToExecute": "[concat('bash ', variables('nodePrepScriptFileName'), ' ', parameters('cloudAccessUsername'), ' ', parameters('cloudAccessPassword'), ' ', parameters('cloudAccessPoolId'))]"
 				}
 			}
 		}, {
@@ -957,6 +961,7 @@
 			"apiVersion": "[variables('apiVersionLinkTemplate')]",
 			"dependsOn": [
 				"[concat('Microsoft.Compute/virtualMachines/', variables('openshiftMasterHostname'), '/extensions/deployOpenShift')]",
+				"[concat('Microsoft.Compute/virtualMachines/', variables('openshiftInfraHostname'), '/extensions/prepNodes')]",
 				"nodeScriptLoop"
 			],
 			"properties": {
