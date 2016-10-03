@@ -13,7 +13,7 @@ This template deploys OpenShift Enterprise with basic username / password for au
 |Load Balancer      |2 probes and two rules for TCP 80 and TCP 443 <br/> NAT rules for SSH on Ports 2200-220X                                                                                  |
 |Public IP Addresses|OpenShift Master public IP<br />OpenShift Router public IP attached to Load Balancer                                                |
 |Storage Accounts   |2 Storage Accounts                                                                                                                  |
-|Virtual Machines   |Single master<br />User-defined number of nodes<br />All VMs include a single attached data disk for Docker thin pool logical volume|
+|Virtual Machines   |Single master<br />Single infra node<br />User-defined number of nodes<br />All VMs include a single attached data disk for Docker thin pool logical volume|
 
 ## Prerequisites
 
@@ -46,27 +46,28 @@ You will need to create a Key Vault to store your SSH Private Key that will then
 
 ### azuredeploy.Parameters.json File Explained
 
-1.  masterVmSize: Select from one of the allowed VM sizes listed in the azuredeploy.json file
-2.  nodeVmSize: Select from one of the allowed VM sizes listed in the azuredeploy.json file
-3.  openshiftMasterHostName: Host name for the Master Node
-4.  openshiftMasterPublicIpDnsLabelPrefix: A unique Public DNS name to reference the Master Node by
-5.  nodeLbPublicIpDnsLabelPrefix: A unique Public DNS name to reference the Node Load Balancer by.  Used to access deployed applications
-6.  nodePrefix: prefix to be prepended to create host names for the Nodes
+1.  _artifactsLocation: URL for artifacts (json, scripts, etc.)
+2.  masterVmSize: Select from one of the allowed VM sizes listed in the azuredeploy.json file
+3.  nodeVmSize: Select from one of the allowed VM sizes listed in the azuredeploy.json file
+4.  openshiftClusterPrefix: Cluster Prefix applied to all nodes - master, infra and nodes
+5.  openshiftMasterPublicIpDnsLabelPrefix: A unique Public DNS name to reference the Master Node by
+6.  nodeLbPublicIpDnsLabelPrefix: A unique Public DNS name to reference the Node Load Balancer by.  Used to access deployed applications
 7.  nodeInstanceCount: Number of Nodes to deploy
-8.  adminUsername: Admin username for both OS login and OpenShift login
-9.  adminPassword: Password for OpenShift login
-10. cloudAccessUsername: Your Cloud Access subscription user name
-11. cloudAccessPassword: The password for your Cloud Access subscription
-12. cloudAccessPoolId: The Pool ID that contains your RHEL and OpenShift subscriptions
-13. sshPublicKey: Copy your SSH Public Key here
-14. subscriptionId: Your Subscription ID<br/>
+8.  dataDiskSize: Size of data disk to attach to nodes
+9.  adminUsername: Admin username for both OS login and OpenShift login
+10.  openshiftPassword: Password for OpenShift login
+11. cloudAccessUsername: Your Cloud Access subscription user name
+12. cloudAccessPassword: The password for your Cloud Access subscription
+13. cloudAccessPoolId: The Pool ID that contains your RHEL and OpenShift subscriptions
+14. sshPublicKey: Copy your SSH Public Key here
+15. subscriptionId: Your Subscription ID<br/>
     a. PowerShell: get-AzureAccount
 	b. Azure CLI: azure account show  - Field is ID
-15. keyVaultResourceGroup: The name of the Resource Group that contains the Key Vault
-16. keyVaultName: The name of the Key Vault you created
-17. keyVaultSecret: The Secret Name you used when creating the Secret
-18. defaultSubDomainType: This will either be xipio (if you don't have your own domain) or custom if you have your own domain that you would like to use for routing
-19. defaultSubDomain: The wildcard DNS name you would like to use for routing if you selected custom above.  If you selected xipio above, then this field will be ignored
+16. keyVaultResourceGroup: The name of the Resource Group that contains the Key Vault
+17. keyVaultName: The name of the Key Vault you created
+18. keyVaultSecret: The Secret Name you used when creating the Secret
+19. defaultSubDomainType: This will either be xipio (if you don't have your own domain) or custom if you have your own domain that you would like to use for routing
+20. defaultSubDomain: The wildcard DNS name you would like to use for routing if you selected custom above.  If you selected xipio above, then this field will be ignored
 
 ## Deploy Template
 
