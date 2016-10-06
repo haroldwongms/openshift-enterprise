@@ -626,6 +626,7 @@
 				"displayName": "OpenShiftMasterNetworkInterface"
 			},
 			"dependsOn": [
+				"[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
 				"[concat('Microsoft.Network/publicIPAddresses/', parameters('openshiftMasterPublicIpDnsLabel'))]"
 			],
 			"properties": {
@@ -653,7 +654,9 @@
 			"tags": {
 				"displayName": "OpenShiftInfraNetworkInterface"
 			},
-			"dependsOn": [],
+			"dependsOn": [
+				"[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+			],
 			"properties": {
 				"ipConfigurations": [{
 					"name": "[concat(variables('openshiftInfraHostname'), 'ipconfig')]",
@@ -674,6 +677,7 @@
 				"displayName": "OpenShiftNodeNetworkInterfaces"
 			},
 			"dependsOn": [
+				"[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
 				"[concat('Microsoft.Network/loadBalancers/', variables('nodeLoadBalancerName'))]",
 				"[concat('Microsoft.Network/loadBalancers/', variables('nodeLoadBalancerName'), '/inboundNatRules/SSH-', variables('openshiftNodeHostname'), '-', copyIndex())]"
 			],
