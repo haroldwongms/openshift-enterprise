@@ -15,7 +15,7 @@ NODE=$8
 NODECOUNT=$9
 ROUTING=${10}
 
-DOMAIN=$( awk 'NR==2' /etc/resolv.conf | awk '{ print $2 }' )
+# DOMAIN=$( awk 'NR==2' /etc/resolv.conf | awk '{ print $2 }' )
 
 # Generate private keys for use by Ansible
 echo $(date) " - Generating Private keys for use by Ansible for OpenShift Installation"
@@ -59,17 +59,20 @@ openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 
 
 # host group for masters
 [masters]
-$MASTER.$DOMAIN
+# $MASTER.$DOMAIN
+$MASTER
 
 # host group for nodes
 [nodes]
-$MASTER.$DOMAIN openshift_node_labels="{'region': 'master', 'zone': 'default'}"
-$INFRA.$DOMAIN openshift_node_labels="{'region': 'infra', 'zone': 'default'}"
+$MASTER openshift_node_labels="{'region': 'master', 'zone': 'default'}"
+$INFRA openshift_node_labels="{'region': 'infra', 'zone': 'default'}"
+# $MASTER.$DOMAIN openshift_node_labels="{'region': 'master', 'zone': 'default'}"
+# $INFRA.$DOMAIN openshift_node_labels="{'region': 'infra', 'zone': 'default'}"
 EOF
 
 for (( c=0; c<$NODECOUNT; c++ ))
 do
-  echo "$NODE-$c.$DOMAIN openshift_node_labels=\"{'region': 'nodes', 'zone': 'default'}\"" >> /etc/ansible/hosts
+  echo "$NODE-$c openshift_node_labels=\"{'region': 'nodes', 'zone': 'default'}\"" >> /etc/ansible/hosts
 done
 
 
