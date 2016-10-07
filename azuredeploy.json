@@ -53,8 +53,9 @@
 		"openshiftClusterPrefix": {
 			"type": "string",
 			"minLength": 1,
+			"maxLength": 5,
 			"metadata": {
-				"description": "OpenShift cluster prefix.  Used to generate master, infra and node hostnames"
+				"description": "OpenShift cluster prefix.  Used to generate master, infra and node hostnames.  Maximum of 5 characters."
 			}
 		},
 		"openshiftMasterPublicIpDnsLabel": {
@@ -91,14 +92,14 @@
 			"type": "string",
 			"minLength": 1,
 			"metadata": {
-				"description": "Administrator username on all VMs"
+				"description": "Administrator username on all VMs and first OpenShift Username"
 			}
 		},
 		"openshiftPassword": {
 			"type": "securestring",
 			"minLength": 1,
 			"metadata": {
-				"description": "Administrator password for OpenShift Console"
+				"description": "Password for login for OpenShift Console"
 			}
 		},
 		"cloudAccessUsername": {
@@ -594,30 +595,6 @@
 				}]
 			}
 		}, {
-			"type": "Microsoft.Network/loadBalancers/inboundNatRules",
-			"name": "[concat(variables('nodeLoadBalancerName'), '/', 'SSH-', variables('openshiftNodeHostname'), '-', copyIndex())]",
-			"location": "[variables('location')]",
-			"apiVersion": "[variables('apiVersionNetwork')]",
-			"tags": {
-				"displayName": "inboundNatRules"
-			},
-			"copy": {
-				"name": "nodeLbLoop",
-				"count": "[parameters('nodeInstanceCount')]"
-			},
-			"dependsOn": [
-				"[variables('nodeLoadBalancerName')]"
-			],
-			"properties": {
-				"frontendIPConfiguration": {
-					"id": "[variables('lbFrontEndConfigId')]"
-				},
-				"protocol": "tcp",
-				"frontendPort": "[copyIndex(2200)]",
-				"backendPort": 22,
-				"enableFloatingIP": false
-			}
-		}, {
 			"type": "Microsoft.Network/networkInterfaces",
 			"name": "[concat(variables('openshiftMasterHostname'), 'nic')]",
 			"location": "[variables('location')]",
@@ -655,7 +632,8 @@
 				"displayName": "OpenShiftInfraNetworkInterface"
 			},
 			"dependsOn": [
-				"[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+				"[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+				"[concat('Microsoft.Network/loadBalancers/', variables('nodeLoadBalancerName'))]"
 			],
 			"properties": {
 				"ipConfigurations": [{
@@ -663,8 +641,11 @@
 					"properties": {
 						"privateIPAllocationMethod": "Dynamic",
 						"subnet": {
-							"id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'), '/subnets/', variables('masterSubnetName'))]"
-						}
+							"id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'), '/subnets/', variables('nodeSubnetName'))]"
+						},
+						"loadBalancerBackendAddressPools": [{
+							"id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/loadBalancers/', variables('nodeLoadBalancerName'), '/backendAddressPools/loadBalancerBackEnd')]"
+						}]
 					}
 				}]
 			}
@@ -678,8 +659,6 @@
 			},
 			"dependsOn": [
 				"[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
-				"[concat('Microsoft.Network/loadBalancers/', variables('nodeLoadBalancerName'))]",
-				"[concat('Microsoft.Network/loadBalancers/', variables('nodeLoadBalancerName'), '/inboundNatRules/SSH-', variables('openshiftNodeHostname'), '-', copyIndex())]"
 			],
 			"copy": {
 				"name": "nodeNICLoop",
@@ -692,13 +671,7 @@
 						"privateIPAllocationMethod": "Dynamic",
 						"subnet": {
 							"id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'), '/subnets/', variables('nodeSubnetName'))]"
-						},
-						"loadBalancerBackendAddressPools": [{
-							"id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/loadBalancers/', variables('nodeLoadBalancerName'), '/backendAddressPools/loadBalancerBackEnd')]"
-						}],
-						"loadBalancerInboundNatRules": [{
-							"id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/loadBalancers/', variables('nodeLoadBalancerName'), '/inboundNatRules/SSH-', variables('openshiftNodeHostname'), '-', copyIndex())]"
-						}]
+						}
 					}
 				}]
 			}
@@ -774,7 +747,7 @@
 			],
 			"properties": {
 				"availabilitySet": {
-					"id": "[resourceId('Microsoft.Compute/availabilitySets', 'masteravailabilityset')]"
+					"id": "[resourceId('Microsoft.Compute/availabilitySets', 'nodeavailabilityset')]"
 				},
 				"hardwareProfile": {
 					"vmSize": "[parameters('masterVmSize')]"
