@@ -17,6 +17,8 @@ ROUTING=${10}
 
 # DOMAIN=$( awk 'NR==2' /etc/resolv.conf | awk '{ print $2 }' )
 
+echo $PASSWORD
+
 # Generate private keys for use by Ansible
 echo $(date) " - Generating Private keys for use by Ansible for OpenShift Installation"
 
