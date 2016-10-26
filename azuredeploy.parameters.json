@@ -2,13 +2,16 @@
 	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
 	"contentVersion": "1.0.0.0",
 	"parameters": {
+		"_artifactsLocation": {
+			"value": "https://raw.githubusercontent.com/haroldwongms/openshift-enterprise/master"
+		},
 		"masterVmSize": {
 			"value": "Standard_DS3_v2"
 		},
 		"nodeVmSize": {
 			"value": "Standard_DS3_v2"
 		},
-		"openshiftMasterHostname": {
+		"openshiftClusterPrefix": {
 			"value": "changeme"
 		},
 		"openshiftMasterPublicIpDnsLabelPrefix": {
@@ -17,16 +20,16 @@
 		"nodeLbPublicIpDnsLabelPrefix": {
 			"value": "GEN-UNIQUE"
 		},
-		"nodePrefix": {
-			"value": "changeme"
-		},
 		"nodeInstanceCount": {
 			"value": 1
+		},
+		"dataDiskSize": {
+			"value": 50
 		},
 		"adminUsername": {
 			"value": "changeme"
 		},
-		"adminPassword": {
+		"openshiftPassword": {
 			"value": "changeme"
 		},
 		"cloudAccessUsername": {
@@ -36,9 +39,6 @@
 			"value": "changeme"
 		},
 		"cloudAccessPoolId": {
-			"value": "changeme"
-		},
-		"defaultSubDomain": {
 			"value": "changeme"
 		},
 		"sshPublicKey": {
@@ -54,6 +54,12 @@
 			"value": "changeme"
 		},
 		"keyVaultSecret": {
+			"value": "changeme"
+		},
+		"defaultSubDomainType": {
+			"value": "xipio"
+		},
+		"defaultSubDomain": {
 			"value": "changeme"
 		}
 	}
