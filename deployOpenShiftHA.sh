@@ -16,6 +16,9 @@ NODECOUNT=$9
 MASTERCOUNT=${10}
 ROUTING=${11}
 
+MASTERLOOP=$MASTERCOUNT-1
+NODELOOP=$NODECOUNT-1
+
 # DOMAIN=$( awk 'NR==2' /etc/resolv.conf | awk '{ print $2 }' )
 
 echo $PASSWORD
@@ -68,23 +71,23 @@ openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 
 
 # host group for masters
 [masters]
-$MASTER-[0:${MASTERCOUNT}] openshift_node_labels="{'role': 'master'}" 
+$MASTER-[0:${MASTERLOOP}] openshift_node_labels="{'role': 'master'}" 
 
 # host group for etcd
 [etcd]
-$MASTER-[0:${MASTERCOUNT}]
+$MASTER-[0:${MASTERLOOP}]
 
 # host group for nodes
 [nodes]
-$MASTER-[0:${MASTERCOUNT}] openshift_node_labels="{'region': 'master', 'zone': 'default'}"
-$INFRA-[0:3]openshift_node_labels="{'region': 'infra', 'zone': 'default'}"
-
+$MASTER-[0:${MASTERLOOP}] openshift_node_labels="{'region': 'master', 'zone': 'default'}"
+$INFRA-[0:${MASTERLOOP}] openshift_node_labels="{'region': 'infra', 'zone': 'default'}"
+$NODE-[0:${NODELOOP}] openshift_node_labels=\"{'region': 'nodes', 'zone': 'default'}
 EOF
 
-for (( c=0; c<$NODECOUNT; c++ ))
-do
-  echo "$NODE-$c openshift_node_labels=\"{'region': 'nodes', 'zone': 'default'}\"" >> /etc/ansible/hosts
-done
+#for (( c=0; c<$NODECOUNT; c++ ))
+#do
+#  echo "$NODE-$c openshift_node_labels=\"{'region': 'nodes', 'zone': 'default'}\"" >> /etc/ansible/hosts
+#done
 
 
 # Initiating installation of OpenShift Enterprise using Ansible Playbook
