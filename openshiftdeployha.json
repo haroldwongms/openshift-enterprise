@@ -103,7 +103,7 @@
 	},
 	"resources": [{
 		"type": "Microsoft.Compute/virtualMachines/extensions",
-		"name": "[concat(parameters('openshiftMasterHostname'), '/deployOpenShift')]",
+		"name": "[concat(parameters('openshiftMasterHostname') '-0', '/deployOpenShift')]",
 		"location": "[resourceGroup().location]",
 		"apiVersion": "2015-06-15",
 		"tags": {
