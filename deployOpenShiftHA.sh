@@ -40,6 +40,45 @@ sed -i -e "s/^#pty=False/pty=False/" /etc/ansible/ansible.cfg
 # Create Ansible Hosts File
 echo $(date) " - Create Ansible Hosts file"
 
+if [ $MASTERCOUNT -eq 1 ]
+then
+
+cat > /etc/ansible/hosts <<EOF
+# Create an OSEv3 group that contains the masters and nodes groups
+[OSEv3:children]
+masters
+nodes
+
+# Set variables common for all OSEv3 hosts
+[OSEv3:vars]
+ansible_ssh_user=$SUDOUSER
+ansible_become=yes
+openshift_install_examples=true
+deployment_type=openshift-enterprise
+docker_udev_workaround=True
+openshift_use_dnsmasq=no
+openshift_master_default_subdomain=$ROUTING
+
+openshift_master_cluster_hostname=$MASTERPUBLICIPHOSTNAME
+openshift_master_cluster_public_hostname=$MASTERPUBLICIPHOSTNAME
+openshift_master_cluster_public_vip=$MASTERPUBLICIPADDRESS
+
+# Enable HTPasswdPasswordIdentityProvider
+openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/master/htpasswd'}]
+
+# host group for masters
+[masters]
+$MASTER-0
+
+# host group for nodes
+[nodes]
+$MASTER-0 openshift_node_labels="{'region': 'master', 'zone': 'default'}"
+$INFRA-0 openshift_node_labels="{'region': 'infra', 'zone': 'default'}"
+$NODE-[0:${NODELOOP}] openshift_node_labels="{'region': 'nodes', 'zone': 'default'}"
+EOF
+
+else
+
 cat > /etc/ansible/hosts <<EOF
 # Create an OSEv3 group that contains the masters and nodes groups
 [OSEv3:children]
@@ -56,10 +95,6 @@ deployment_type=openshift-enterprise
 docker_udev_workaround=True
 openshift_use_dnsmasq=no
 openshift_master_default_subdomain=$ROUTING
-
-# default selectors for router and registry services 
-# openshift_router_selector='region=infra' 
-# openshift_registry_selector='region=infra' 
 
 openshift_master_cluster_method=native
 openshift_master_cluster_hostname=$MASTERPUBLICIPHOSTNAME
@@ -83,6 +118,8 @@ $MASTER-[0:${MASTERLOOP}] openshift_node_labels="{'region': 'master', 'zone': 'd
 $INFRA-[0:${MASTERLOOP}] openshift_node_labels="{'region': 'infra', 'zone': 'default'}"
 $NODE-[0:${NODELOOP}] openshift_node_labels="{'region': 'nodes', 'zone': 'default'}"
 EOF
+
+fi
 
 #for (( c=0; c<$NODECOUNT; c++ ))
 #do
