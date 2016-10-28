@@ -16,8 +16,8 @@ NODECOUNT=$9
 MASTERCOUNT=${10}
 ROUTING=${11}
 
-MASTERLOOP=$MASTERCOUNT-1
-NODELOOP=$NODECOUNT-1
+MASTERLOOP=$((MASTERCOUNT - 1))
+NODELOOP=$((NODECOUNT - 1))
 
 # DOMAIN=$( awk 'NR==2' /etc/resolv.conf | awk '{ print $2 }' )
 
@@ -58,8 +58,8 @@ openshift_use_dnsmasq=no
 openshift_master_default_subdomain=$ROUTING
 
 # default selectors for router and registry services 
-openshift_router_selector='region=infra' 
-openshift_registry_selector='region=infra' 
+# openshift_router_selector='region=infra' 
+# openshift_registry_selector='region=infra' 
 
 openshift_master_cluster_method=native
 openshift_master_cluster_hostname=$MASTERPUBLICIPHOSTNAME
@@ -71,7 +71,7 @@ openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 
 
 # host group for masters
 [masters]
-$MASTER-[0:${MASTERLOOP}] openshift_node_labels="{'role': 'master'}" 
+$MASTER-[0:${MASTERLOOP}]
 
 # host group for etcd
 [etcd]
@@ -81,7 +81,7 @@ $MASTER-[0:${MASTERLOOP}]
 [nodes]
 $MASTER-[0:${MASTERLOOP}] openshift_node_labels="{'region': 'master', 'zone': 'default'}"
 $INFRA-[0:${MASTERLOOP}] openshift_node_labels="{'region': 'infra', 'zone': 'default'}"
-$NODE-[0:${NODELOOP}] openshift_node_labels=\"{'region': 'nodes', 'zone': 'default'}
+$NODE-[0:${NODELOOP}] openshift_node_labels=\"{'region': 'nodes', 'zone': 'default'}"
 EOF
 
 #for (( c=0; c<$NODECOUNT; c++ ))
