@@ -81,7 +81,7 @@ $MASTER-[0:${MASTERLOOP}]
 [nodes]
 $MASTER-[0:${MASTERLOOP}] openshift_node_labels="{'region': 'master', 'zone': 'default'}"
 $INFRA-[0:${MASTERLOOP}] openshift_node_labels="{'region': 'infra', 'zone': 'default'}"
-$NODE-[0:${NODELOOP}] openshift_node_labels=\"{'region': 'nodes', 'zone': 'default'}"
+$NODE-[0:${NODELOOP}] openshift_node_labels="{'region': 'nodes', 'zone': 'default'}"
 EOF
 
 #for (( c=0; c<$NODECOUNT; c++ ))
