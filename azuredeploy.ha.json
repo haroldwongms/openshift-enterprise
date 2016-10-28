@@ -203,9 +203,9 @@
 		"government": ".blob.core.usgovcloudapi.net",
 		"storageReference": "[variables(parameters('azureCloud'))]",
 		"namingInfix": "[toLower(parameters('openshiftClusterPrefix'))]",
-		"openshiftMasterHostname": "[concat(variables('namingInfix'), 'mast')]",
-		"openshiftNodeHostname": "[concat(variables('namingInfix'), 'node')]",
-		"openshiftInfraHostname": "[concat(variables('namingInfix'), 'infra')]",
+		"openshiftMasterHostname": "[concat(variables('namingInfix'), 'm')]",
+		"openshiftNodeHostname": "[concat(variables('namingInfix'), 'n')]",
+		"openshiftInfraHostname": "[concat(variables('namingInfix'), 'i')]",
 		"newStorageAccountMaster": "[concat(uniqueString(concat(resourceGroup().id, 'msa', '0')), 'msa')]",
 		"newStorageAccountNode": "[concat(uniqueString(concat(resourceGroup().id, 'nsa', '1')), 'nsa')]",
 		"addressPrefix": "192.168.0.0/16",
@@ -416,53 +416,6 @@
 	"resources": [
 
 		{
-			"apiVersion": "[variables('apiVersionNetwork')]",
-			"type": "Microsoft.Network/networkSecurityGroups",
-			"name": "[concat(variables('openshiftMasterHostname'), '-nsg')]",
-			"location": "[variables('location')]",
-			"properties": {
-				"securityRules": [{
-					"name": "allowSSHin_all",
-					"properties": {
-						"description": "Allow SSH in from all locations",
-						"protocol": "Tcp",
-						"sourcePortRange": "*",
-						"destinationPortRange": "22",
-						"sourceAddressPrefix": "*",
-						"destinationAddressPrefix": "*",
-						"access": "Allow",
-						"priority": 100,
-						"direction": "Inbound"
-					}
-				}, {
-					"name": "allowHTTPS_all",
-					"properties": {
-						"description": "Allow HTTPS connections from all locations",
-						"protocol": "Tcp",
-						"sourcePortRange": "*",
-						"destinationPortRange": "443",
-						"sourceAddressPrefix": "*",
-						"destinationAddressPrefix": "*",
-						"access": "Allow",
-						"priority": 200,
-						"direction": "Inbound"
-					}
-				}, {
-					"name": "allowOpenShiftConsolIn_all",
-					"properties": {
-						"description": "Allow HTTPS connections from all locations",
-						"protocol": "Tcp",
-						"sourcePortRange": "*",
-						"destinationPortRange": "8443",
-						"sourceAddressPrefix": "*",
-						"destinationAddressPrefix": "*",
-						"access": "Allow",
-						"priority": 300,
-						"direction": "Inbound"
-					}
-				}]
-			}
-		}, {
 			"type": "Microsoft.Network/virtualNetworks",
 			"name": "[variables('virtualNetworkName')]",
 			"location": "[variables('location')]",
