@@ -196,7 +196,7 @@
 	"variables": {
 		"location": "[resourceGroup().location]",
 		"apiVersionCompute": "2015-06-15",
-		"apiVersionNetwork": "2015-06-15",
+		"apiVersionNetwork": "2016-03-30",
 		"apiVersionStorage": "2015-06-15",
 		"apiVersionLinkTemplate": "2015-01-01",
 		"commercial": ".blob.core.windows.net",
@@ -494,6 +494,12 @@
 		}, {
 			"type": "Microsoft.Compute/availabilitySets",
 			"name": "masteravailabilityset",
+			"location": "[variables('location')]",
+			"apiVersion": "[variables('apiVersionCompute')]",
+			"properties": {}
+		}, {
+			"type": "Microsoft.Compute/availabilitySets",
+			"name": "infraavailabilityset",
 			"location": "[variables('location')]",
 			"apiVersion": "[variables('apiVersionCompute')]",
 			"properties": {}
